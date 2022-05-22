@@ -53,7 +53,7 @@ export function ProductsPage({ products }) {
     );
   }
 
-  console.log( data )
+  console.log(data)
 
   return (
     <Page>
@@ -62,7 +62,10 @@ export function ProductsPage({ products }) {
           <Card>
             <ProductsList products={data} />
           </Card>
-          <ApplyRandomPrices selectedItems={data.nodes} onUpdate={refetch} />
+          <ApplyRandomPrices
+            selectedItems={data.nodes}
+            onUpdate={refetch}
+          />
         </Layout.Section>
       </Layout>
     </Page>

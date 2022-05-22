@@ -37,6 +37,7 @@
     "vite": "^2.9.8"
   },
   "devDependencies": {
+    "@actinc/eslint-config": "^3.4.2",
     "husky": "^7.0.4",
     "nodemon": "^2.0.15",
     "prettier": "^2.6.2",

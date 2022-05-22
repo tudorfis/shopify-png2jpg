@@ -23,7 +23,7 @@ export function HomePage() {
   useEffect(() => {
     const ids = products.map(product => ({ id: product.id }));
     setProductsId(ids);
-  }, [products]);
+  }, [products,setProductsId]);
 
   function handleProductSelection(payload) {
     setIsOpen(false);
