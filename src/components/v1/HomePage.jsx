@@ -7,20 +7,28 @@ import {
 import React, { useEffect, useState } from "react";
 import { ResourcePicker } from "@shopify/app-bridge-react";
 import ProdcutList from "./Product/ProductList";
+import store from "store-js";
 
 export function HomePage() {
   const [isOpen, setIsOpen] = useState(false);
   const [products, setProducts] = useState([]);
   const [productsId, setProductsId] = useState([]);
+  const host = new URL(location).searchParams.get("host");
+
+  useEffect(() => {
+    const productList = store.get( `${host}-products`) || [];
+    setProducts(productList);
+  }, []);
 
   useEffect(() => {
     const ids = products.map(product => ({ id: product.id }));
     setProductsId(ids);
-  }, [products])
+  }, [products]);
 
   function handleProductSelection(payload) {
     setIsOpen(false);
-    setProducts(payload.selection)
+    setProducts(payload.selection);
+    store.set( `${host}-products`, payload.selection);
   }
 
   return <>
@@ -41,7 +49,6 @@ export function HomePage() {
           onAction: _ => setIsOpen(true)
         }}
       >
-        
         <ProdcutList
           products={products}
         />
@@ -49,7 +56,7 @@ export function HomePage() {
     ) : (
       <Card>
         <EmptyState 
-          heading="Manage the products you want to display"
+          heading="Manage the products you want to convert"
           image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
           action={{
             content: "Select products",
@@ -57,7 +64,7 @@ export function HomePage() {
             onSelection: () => {}
           }}
         >
-          <p>Select the products you want to use on your banner</p>
+          <p>Select the all products that have large png images</p>
         </EmptyState>
       </Card>
     )}

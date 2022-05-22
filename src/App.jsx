@@ -13,10 +13,12 @@ import { Redirect } from "@shopify/app-bridge/actions";
 import { AppProvider as PolarisProvider } from "@shopify/polaris";
 import translations from "@shopify/polaris/locales/en.json";
 import "@shopify/polaris/build/esm/styles.css";
-
-import { HomePage } from "./components/HomePage";
+import { EmptyStatePage } from "./components/v2/Product/EmptyStatePage";
+import { ProductsPage } from "./components/v2/Product/ProductsPage";
+import { useState } from "react";
 
 export default function App() {
+  const [products, setProducts] = useState([]);
   return (
     <PolarisProvider i18n={translations}>
       <AppBridgeProvider
@@ -27,7 +29,10 @@ export default function App() {
         }}
       >
         <MyProvider>
-          <HomePage />
+          {products.length > 0 ? 
+            <ProductsPage products={products} /> :
+            <EmptyStatePage products={products} setProducts={setProducts} />
+          }
         </MyProvider>
       </AppBridgeProvider>
     </PolarisProvider>
