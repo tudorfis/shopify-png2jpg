@@ -13,8 +13,8 @@ import { Redirect } from "@shopify/app-bridge/actions";
 import { AppProvider as PolarisProvider } from "@shopify/polaris";
 import translations from "@shopify/polaris/locales/en.json";
 import "@shopify/polaris/build/esm/styles.css";
-import { EmptyStatePage } from "./components/v2/Product/EmptyStatePage";
-import { ProductsPage } from "./components/v2/Product/ProductsPage";
+import { EmptyStatePage } from "./Product/EmptyStatePage";
+import { ProductsPage } from "./Product/ProductsPage";
 import { useState } from "react";
 
 export default function App() {
