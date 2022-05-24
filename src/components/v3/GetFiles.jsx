@@ -52,19 +52,25 @@ export function GetFiles() {
 
     console.log(data)
 
+    return <>
+        <Page>
+            {JSON.stringify(data)}
+        </Page>
+    </>
+
     // const productsGroupIds = groupBy(data?.products?.edges, ['node', 'id'], ['node'])
     // const products = deepExtract(productsGroupIds, 'images', ['edges', 'node'])
 
-    return <>
-        <Page>
-            {Object.values(products).map((product, index) => <>
-                <p key={index}>{product.id}</p>
-                <ul>
-                    {product.images.map((image, index) => (
-                        <li key={index}>{image.url}</li>
-                    ))}
-                </ul>
-            </>)}
-        </Page>
-    </>
+    // return <>
+    //     <Page>
+    //         {Object.values(products).map((product, index) => <>
+    //             <p key={index}>{product.id}</p>
+    //             <ul>
+    //                 {product.images.map((image, index) => (
+    //                     <li key={index}>{image.url}</li>
+    //                 ))}
+    //             </ul>
+    //         </>)}
+    //     </Page>
+    // </>
 }
