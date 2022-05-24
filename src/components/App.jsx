@@ -13,11 +13,9 @@ import { Redirect } from "@shopify/app-bridge/actions";
 import { AppProvider as PolarisProvider } from "@shopify/polaris";
 import translations from "@shopify/polaris/locales/en.json";
 import "@shopify/polaris/build/esm/styles.css";
-import { useState } from "react";
-import { ImageUpload } from "./v3/ImageUpload";
+import { GetFiles } from "./v3/GetFiles";
 
 export default function App() {
-    const [products, setProducts] = useState([]);
     return (
         <PolarisProvider i18n={translations}>
             <AppBridgeProvider
@@ -28,7 +26,7 @@ export default function App() {
                 }}
             >
                 <MyProvider>
-                    <ImageUpload />
+                    <GetFiles />
                 </MyProvider>
             </AppBridgeProvider>
         </PolarisProvider>
