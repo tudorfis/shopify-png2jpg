@@ -1,58 +1,89 @@
 
 import { gql, useQuery } from "@apollo/client"
-import { Card, Heading, Page, Stack, TextContainer, Thumbnail } from "@shopify/polaris"
+import { Card, Heading, Link, Page, Stack, TextContainer, Thumbnail } from "@shopify/polaris"
+import { useRef, useMemo, useState, useEffect } from "react"
+import ErrorDisplay from "../base/ErrorDisplay"
+import LoadingOverlay from "../base/LoadingOverlay"
+import { ProductFragment, ImageFragment } from "/src/gql/fragments"
+import { getProducts } from "/src/gql/query"
+import { filterProducts } from "/src/utils/product.utils"
 
-const GET_PRODUCTS_QUERY = gql`{
-  products(first: 5) {
-    edges {
-      node {
-        id
-        title
-        createdAt
-        images(first: 5) {
-          edges {
-            node {
-              id
-              url
-            }
+const NUMBER_OF_PRODUCTS = 250
+const NUMBER_OF_IMAGES = 10
+
+const GET_PRODUCTS = gql`
+  ${ProductFragment}
+  ${ImageFragment}
+
+  ${getProducts(`
+    ...ProductFragment
+      images(first: ${NUMBER_OF_IMAGES}) {
+        edges {
+          node {
+            ...ImageFragment
+            thumbnail: transformedSrc(maxWidth: 50, crop: CENTER)
           }
         }
       }
-    }
+  `)}
+`
+
+let times = 0
+
+export default function ProductsWithImages() {
+  const [variables, setVariables] = useState({ first: NUMBER_OF_PRODUCTS })
+  const { data, error } = useQuery(GET_PRODUCTS, { variables })
+  const productsRef = useRef([])
+
+  if (error) return (
+    <ErrorDisplay error={error} />
+  )
+
+  if (!data) return (
+    <LoadingOverlay title="Loading products..." />
+  )
+
+  if (times++ < 1 && data?.products.pageInfo.hasNextPage) {
+    setVariables({ ...variables, after: data.products.pageInfo.endCursor })
+    return null
   }
-}`
 
-export default function () {
-  const { loading, data } = useQuery(GET_PRODUCTS_QUERY)
-  if (loading) return <Page>Loading...</Page>
+  productsRef.current = [...productsRef.current, ...data.products.edges]
+  const products = filterProducts(productsRef.current)
 
-  const { products } = data
+  console.log(products)
 
-  return <>
+  return (
     <Page>
       <TextContainer
         spacing="loose"
       >
         <Heading>Products with images</Heading>
-
-        {products.edges.map(({ node: product }) => (
-          <Card
-            key={product.id}
-            title={product.title}
-            sectioned
-          >
-            <Stack>
-              {product.images.edges.map(({ node: image }) => (
-                <Thumbnail
-                  key={image.id}
-                  source={image.url}
-                  alt=""
-                />
-              ))}
-            </Stack>
-          </Card>
-        ))}
+        <>
+          {products.map(({ node: product }, productIndex) => (
+            <Card
+              key={`product_${productIndex}`}
+              title={product.title}
+              sectioned
+            >
+              <Stack>
+                {product.images.edges.map(({ node: image }, imageIndex) => (
+                  <Link
+                    key={`image_${imageIndex}`}
+                    url={image.url}
+                    external
+                  >
+                    <Thumbnail
+                      source={image.thumbnail}
+                      alt={image.altText}
+                    />
+                  </Link>
+                ))}
+              </Stack>
+            </Card>
+          ))}
+        </>
       </TextContainer>
     </Page>
-  </>
+  )
 }
