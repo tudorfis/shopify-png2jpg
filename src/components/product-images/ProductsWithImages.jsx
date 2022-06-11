@@ -8,8 +8,8 @@ import { ProductFragment, ImageFragment } from "/src/gql/fragments"
 import { getProducts } from "/src/gql/query"
 import { filterProducts } from "/src/utils/product.utils"
 
-const NUMBER_OF_PRODUCTS = 250
-const NUMBER_OF_IMAGES = 10
+const NUMBER_OF_PRODUCTS = 230
+const NUMBER_OF_IMAGES = 1
 
 const GET_PRODUCTS = gql`
   ${ProductFragment}
@@ -28,25 +28,20 @@ const GET_PRODUCTS = gql`
   `)}
 `
 
-let times = 0
+// let times = 0
 
 export default function ProductsWithImages() {
   const [variables, setVariables] = useState({ first: NUMBER_OF_PRODUCTS })
   const { data, error } = useQuery(GET_PRODUCTS, { variables })
   const productsRef = useRef([])
 
-  if (error) return (
-    <ErrorDisplay error={error} />
-  )
+  if (error) return <ErrorDisplay error={error} />
+  if (!data) return <LoadingOverlay title="Loading products with PNG images..." />
 
-  if (!data) return (
-    <LoadingOverlay title="Loading products..." />
-  )
-
-  if (times++ < 1 && data?.products.pageInfo.hasNextPage) {
-    setVariables({ ...variables, after: data.products.pageInfo.endCursor })
-    return null
-  }
+  // if (times++ < 2 && data?.products.pageInfo.hasNextPage) {
+  //   setVariables({ ...variables, after: data.products.pageInfo.endCursor })
+  //   return null
+  // }
 
   productsRef.current = [...productsRef.current, ...data.products.edges]
   const products = filterProducts(productsRef.current)
