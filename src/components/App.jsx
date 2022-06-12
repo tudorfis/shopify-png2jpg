@@ -13,7 +13,8 @@ import { Redirect } from "@shopify/app-bridge/actions";
 import { AppProvider as PolarisProvider } from "@shopify/polaris";
 import translations from "@shopify/polaris/locales/en.json";
 import "@shopify/polaris/build/esm/styles.css";
-import  Home from "./csv/Home";
+import  Home from "./drag/Home";
+import '/src/css/index.css'
 
 export default function App() {
     console.clear()
